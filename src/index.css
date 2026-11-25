@@ -61,10 +61,8 @@ body{margin:0;background:#050509;color:#fff;font-family:Inter,system-ui,sans-ser
 .gift-model-star{filter:drop-shadow(0 0 8px #D4AF37);animation:twinkle 1.8s ease-in-out infinite alternate}
 .gift-model-star-delay{animation-delay:.8s}
 @keyframes box-float{50%{transform:translateY(-7px)}}
-.gift-preview-wrap{max-width:380px;margin-inline:auto;width:100%}
-.gift-preview{width:100%;overflow:visible;filter:drop-shadow(0 18px 18px rgba(0,0,0,.3))}
-.gift-preview-lid{transform-box:fill-box;transform-origin:bottom;animation:lid-float 3s ease-in-out infinite}
-.gift-item{filter:drop-shadow(0 0 6px rgba(212,175,55,.7));animation:item-pop .45s ease both}
+.gift-preview-wrap{max-width:380px;margin-inline:auto;width:100%;aspect-ratio:4/3}
+.gift-preview{width:100%;overflow:hidden;border-radius:1rem;filter:drop-shadow(0 18px 18px rgba(0,0,0,.3))}
 @keyframes lid-float{50%{transform:translateY(-3px) rotate(-1deg)}}
 @keyframes item-pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .story-parallax{overflow:hidden}

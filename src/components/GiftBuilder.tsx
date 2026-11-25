@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { MessageCircle } from 'lucide-react'
-import { CATEGORIES, EXPERIENCE, SITE, type Category } from '../data'
+import { CATEGORIES, EXPERIENCE, FIREWORKS_PHOTOS, SITE, type Category } from '../data'
+import StockPhoto from './StockPhoto'
 
 export default function GiftBuilder() {
   const [quantities, setQuantities] = useState<Record<Category, number>>(() =>
@@ -30,29 +31,13 @@ export default function GiftBuilder() {
         <MessageCircle size={15} />Send selection on WhatsApp
       </a>
     </div>
-    <div className="gift-preview-wrap" aria-label={`${total} selected items in the gift box`} role="img">
-      <svg viewBox="0 0 360 270" className="gift-preview">
-        <defs>
-          <linearGradient id="builder-gold" x2="0" y2="1"><stop stopColor="#fff3b0" /><stop offset="1" stopColor="#D4AF37" /></linearGradient>
-          <linearGradient id="builder-side" x2="1"><stop stopColor="#32105F" /><stop offset="1" stopColor="#10152D" /></linearGradient>
-        </defs>
-        <ellipse cx="180" cy="224" rx="110" ry="15" fill="#000" opacity=".45" />
-        <g className="gift-preview-box">
-          <path d="M75 100h210v120H75z" fill="#32105F" stroke="#D4AF37" strokeWidth="3" />
-          <path d="M75 100h35v120H75z" fill="url(#builder-side)" opacity=".8" />
-          <path d="M162 101h36v118h-36z" fill="url(#builder-gold)" />
-          <path d="M65 82h230v28H65z" fill="url(#builder-gold)" stroke="#fff3b0" strokeWidth="2" className="gift-preview-lid" />
-          <path d="M180 83c-45-3-47-45-22-45 21 0 24 26 22 45 4-19 7-45 27-45 25 0 22 42-27 45" fill="none" stroke="#D4AF37" strokeWidth="9" />
-          {selected.map((category, index) => {
-            const x = 119 + (index % 4) * 34
-            const y = 176 - Math.floor(index / 4) * 28
-            return <g key={category} className="gift-item" style={{ animationDelay: `${index * 70}ms` }}>
-              <circle cx={x} cy={y} r={8 + Math.min(quantities[category], 4)} fill={index % 2 ? '#2764FF' : '#fff3b0'} opacity=".9" />
-              <path d={`M${x} ${y - 9}v-9`} stroke="#D4AF37" strokeWidth="2" />
-            </g>
-          })}
-        </g>
-      </svg>
+    <div className="gift-preview-wrap" aria-label={`${total} selected items in the gift box`}>
+      <StockPhoto
+        src={FIREWORKS_PHOTOS.giftBox}
+        alt="Gift packaging stock photo for inspiration, not a Maheswari product"
+        className="gift-preview h-full object-cover"
+        sizes="(min-width: 1024px) 32vw, 100vw"
+      />
       <p className="mt-1 text-center text-xs uppercase tracking-[.25em] text-gold">{total ? `${total} selected item${total === 1 ? '' : 's'}` : 'Your box is ready to fill'}</p>
     </div>
   </section>

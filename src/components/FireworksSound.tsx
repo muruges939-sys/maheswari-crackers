@@ -87,10 +87,10 @@ export default function FireworksSound() {
     source.stop(context.currentTime + duration)
   }, [])
 
-  const playSound = useCallback((kind: SoundKind, fromToggle = false) => {
+  const playSound = useCallback((kind: SoundKind, fromToggle = false, synchronized = false) => {
     if (!enabledRef.current || (!interacted.current && !fromToggle)) return
     const now = Date.now()
-    if (now - lastPlayed.current < 1100) return
+    if (!synchronized && now - lastPlayed.current < 1100) return
     lastPlayed.current = now
 
     const element = player.current
@@ -130,35 +130,47 @@ export default function FireworksSound() {
 
   useEffect(() => {
     const onPointerDown = (event: PointerEvent) => {
+      if (!event.isTrusted) return
       const target = event.target as Element
       if (target.closest('[data-sound-toggle]')) return
       interacted.current = true
       if (!target.closest('button, a, input, select, textarea')) playSound('pop')
     }
     const onKeyboardClick = (event: MouseEvent) => {
+      if (!event.isTrusted) return
       if ((event.target as Element).closest('[data-sound-toggle]')) return
       interacted.current = true
       playSound('pop')
     }
+    const onUserScrollGesture = (event: WheelEvent | KeyboardEvent) => {
+      if (event.isTrusted) interacted.current = true
+    }
     const onScroll = () => {
-      interacted.current = true
+      if (!interacted.current) return
       const now = Date.now()
       if (now - lastScrollSound.current < 5000) return
       lastScrollSound.current = now
       playSound(Math.random() < 0.25 ? 'ambience' : 'distant')
     }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (['ArrowDown', 'PageDown', ' ', 'End', 'Home'].includes(event.key)) onUserScrollGesture(event)
+    }
     const onFireworksSound = (event: Event) => {
       const kind = (event as CustomEvent<{ kind?: SoundKind }>).detail?.kind
-      if (kind && kind in SOUND_URLS) playSound(kind)
+      if (kind && kind in SOUND_URLS) playSound(kind, false, true)
     }
 
     window.addEventListener('pointerdown', onPointerDown, { passive: true })
     window.addEventListener('click', onKeyboardClick)
+    window.addEventListener('wheel', onUserScrollGesture, { passive: true })
+    window.addEventListener('keydown', onKeyDown)
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('fireworks-sound', onFireworksSound)
     return () => {
       window.removeEventListener('pointerdown', onPointerDown)
       window.removeEventListener('click', onKeyboardClick)
+      window.removeEventListener('wheel', onUserScrollGesture)
+      window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('fireworks-sound', onFireworksSound)
       player.current?.pause()
